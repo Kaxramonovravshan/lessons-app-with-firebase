@@ -1,0 +1,34 @@
+
+
+.rodal-dialog{
+  overflow-y: scroll;
+}
+
+._box{
+  width: 200px;
+  min-height: 200px;
+  border: 2px solid !important;
+  border-radius: 15px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+
+  .rodal-dialog{
+    width: 80% !important;
+  }
+
+  .f-box_{
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .my-btn_{
+    width: 100% !important;
+  }
+}
