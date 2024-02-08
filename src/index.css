@@ -1,10 +1,8 @@
-
-
-.rodal-dialog{
+.rodal-dialog {
   overflow-y: scroll;
 }
 
-._box{
+._box {
   width: 200px;
   min-height: 200px;
   border: 2px solid !important;
@@ -16,19 +14,25 @@
   gap: 5px;
   cursor: pointer;
 }
+.icon-width {
+  width: 10% !important;
+  cursor: pointer;
+}
 
 @media (max-width: 500px) {
-
-  .rodal-dialog{
+  .rodal-dialog {
     width: 80% !important;
   }
 
-  .f-box_{
+  .f-box_ {
     flex-direction: column;
     align-items: center;
   }
 
-  .my-btn_{
+  .my-btn_ {
     width: 100% !important;
+  }
+  .login{
+    width: 95% !important;
   }
 }

@@ -1,217 +1,66 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
-import Rodal from "rodal";
+import React, { useEffect, useState } from "react";
 import {
-  getDocs,
-  collection,
-  addDoc,
-  doc,
-  deleteDoc,
-  updateDoc
-} from "firebase/firestore";
+  Link,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate
+} from "react-router-dom";
+import Cabinet from "./pages/Cabinet/Cabinet";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { collection, doc, getDocs, query, where } from "firebase/firestore";
 import { firestore } from "./utils/firebase.config";
 
 const App = () => {
-  const [lessons, setLessonss] = useState([]);
-  const [currentLesson, setCurrentLesson] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [saveModal, setSaveModal] = useState(false);
-  const [inpValue, setInpValue] = useState("");
-  const [newVideo, setNewVideo] = useState([]);
-  const [currentItem, setCurrentItem] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [show, setShow] = useState(false);
+  const openPage = ["/login", "/register"];
 
   useEffect(() => {
-    getLessons();
-  }, []);
+    const token = localStorage.getItem("token");
+    const refCollection = collection(firestore, "users");
 
-  function getLessons() {
-    const refCollection = collection(firestore, "lessons");
-    getDocs(refCollection).then((res) => {
-      let arr = res.docs.map((itm) => {
-        return { ...itm.data(), id: itm.id };
+    const q = query(refCollection, where("token", "==", token));
+
+    getDocs(q)
+      .then((res) => {
+        console.log(res.docs[0].data());
+        setShow(true);
+      })
+      .catch((err) => {
+        setShow(false);
+        if (!openPage.includes(location.pathname)) {
+          navigate("/login");
+        }
       });
-
-      setLessonss(arr);
-    });
-  }
-
-  function openVideo(i) {
-    setCurrentLesson(i);
-    setIsOpen(!isOpen);
-  }
-
-  function saveVideo() {
-    newVideo.push({
-      vName: "",
-      vLink: ""
-    });
-    setNewVideo([...newVideo]);
-  }
-
-  function saveValue(e, i) {
-    newVideo[i].vName = e.target.value;
-    setNewVideo([...newVideo]);
-  }
-  function saveValue2(e, i) {
-    newVideo[i].vLink = e.target.value;
-    setNewVideo([...newVideo]);
-  }
-
-  function saveLesson() {
-    if (currentItem === "") {
-      const refCollection = collection(firestore, "lessons");
-      addDoc(refCollection, { name: inpValue, video: newVideo }).then((res) => {
-        getLessons();
-      });
-    } else {
-      const refCollection = collection(firestore, "lessons");
-      const oneUser = doc(refCollection, currentItem);
-      updateDoc(oneUser, { name: inpValue, video: newVideo }).then((res) => {
-        getLessons();
-      });
-      setCurrentItem("");
-    }
-    setSaveModal(!saveModal);
-  }
-
-  function delItem(id) {
-    const refCollection = collection(firestore, "lessons");
-    const oneUser = doc(refCollection, id);
-    deleteDoc(oneUser).then((res) => {
-      getLessons();
-    });
-  }
-
-  function editItem(itm) {
-    setCurrentItem(itm.id);
-    setSaveModal(!saveModal);
-    setNewVideo(itm.video);
-    setInpValue(itm.name);
-  }
-
-  function deleteInp(i) {
-    newVideo.splice(i, 1);
-    setNewVideo([...newVideo]);
-  }
+  }, [location.pathname]);
 
   return (
     <div>
-      <div className="w-50 mx-auto d-flex justify-content-end mb-2">
-        <button
-          onClick={() => setSaveModal(!saveModal)}
-          className="btn my-btn_ btn-success w-25 "
-        >
-          +
-        </button>
+      <div className="p-3 bg-dark mb-3 text-white d-flex align-items-center justify-content-between">
+        <h1>LOGO</h1>
+        <div className="d-flex align-items-center gap-3">
+          {show ? (
+            ""
+          ) : (
+            <Link to={"/login"} className="btn btn-primary">
+              Вход
+            </Link>
+          )}
+          <button className="btn btn-warning">Кабинет</button>
+        </div>
       </div>
 
-      <div className="p-4 d-flex f-box_ gap-3 flex-wrap w-100 container">
-        {lessons.map((itm, i) => {
-          return (
-            <div
-              onDoubleClick={() => editItem(itm)}
-              className="border p-2 _box"
-              key={itm.id}
-            >
-              <h5 className="text-center">{itm.name}</h5>
-              <h6 className="text-center mb-3">
-                There are{" "}
-                <span className="text-danger">{itm.video.length}</span> videos
-                in this lesson
-              </h6>
-              <p onClick={() => openVideo(i)} className="text-primary">
-                show click
-              </p>
-              <button
-                onClick={() => delItem(itm.id)}
-                className="btn btn-danger"
-              >
-                Delete Lesson
-              </button>
-            </div>
-          );
-        })}
-      </div>
-      <Rodal
-        width={600}
-        height={300}
-        visible={isOpen}
-        onClose={() => setIsOpen(!isOpen)}
-      >
-        <div className="py-4">
-          <table className="table table-bordered table-hover">
-            <thead>
-              <tr>
-                <th>Video name</th>
-                <th>Video URL</th>
-              </tr>
-            </thead>
-            <tbody>
-              {lessons[currentLesson]?.video.map((itm, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{itm.vName}</td>
-                    <td>
-                      <a target={"_blank"} href={itm.vLink}>
-                        {itm.vLink}
-                      </a>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </Rodal>
-
-      <Rodal
-        width={500}
-        height={300}
-        visible={saveModal}
-        onClose={() => setSaveModal(!saveModal)}
-      >
-        <div className="d-flex flex-column gap-2 py-4">
-          <input
-            value={inpValue}
-            onChange={(e) => setInpValue(e.target.value)}
-            className="form-control"
-            type="text"
-            placeholder="lesson name"
-          />
-
-          {newVideo.map((itm, i) => {
-            return (
-              <div key={i} className="mb-2 d-flex gap-2">
-                <input
-                  value={newVideo[i].vName}
-                  onChange={(e) => saveValue(e, i)}
-                  className="form-control"
-                  type="text"
-                />
-                <input
-                  value={newVideo[i].vLink}
-                  onChange={(e) => saveValue2(e, i)}
-                  className="form-control "
-                  type="text"
-                />
-                <button onClick={() => deleteInp(i)} className="btn btn-danger">
-                  X
-                </button>
-              </div>
-            );
-          })}
-
-          <button onClick={saveVideo} className="btn btn-dark w-50">
-            add video
-          </button>
-          <button
-            onClick={saveLesson}
-            className="btn btn-success w-50 d-block mx-auto"
-          >
-            save
-          </button>
-        </div>
-      </Rodal>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/cabinet" element={<Cabinet />} />
+      </Routes>
     </div>
   );
 };
