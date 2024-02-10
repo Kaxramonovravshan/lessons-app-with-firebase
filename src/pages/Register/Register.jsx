@@ -6,13 +6,15 @@ import facebookIcon from "../../img/facebook.jpg";
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  FacebookAuthProvider
 } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { auth, firestore } from "../../utils/firebase.config";
 
 const Register = () => {
-  const provider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,12 +39,13 @@ const Register = () => {
   }
 
   function signInGoogle() {
-    signInWithPopup(auth, provider).then((result) => {
+    signInWithPopup(auth, googleProvider).then((result) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential.accessToken;
       const user = result.user;
-      console.log(user);
+
       const refCollection = collection(firestore, "users");
+
       addDoc(refCollection, {
         email: user.email,
         username: user.displayName,
@@ -51,6 +54,16 @@ const Register = () => {
         localStorage.setItem("token", result.user.uid);
         navigate("/");
       });
+    });
+  }
+
+  function signInFacebook() {
+    const auth = getAuth();
+    signInWithPopup(auth, provider).then((result) => {
+      const user = result.user;
+
+      const credential = FacebookAuthProvider.credentialFromResult(result);
+      const accessToken = credential.accessToken;
     });
   }
 
@@ -88,7 +101,7 @@ const Register = () => {
             alt=""
           />
           <img className="icon-width" src={githubIcon} alt="" />
-          <img className="icon-width" src={facebookIcon} alt="" />
+          <img onClick={signInFacebook} className="icon-width" src={facebookIcon} alt="" />
         </div>
       </div>
     </div>

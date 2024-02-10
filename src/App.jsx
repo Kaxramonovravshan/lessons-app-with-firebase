@@ -28,7 +28,6 @@ const App = () => {
 
     getDocs(q)
       .then((res) => {
-        console.log(res.docs[0].data());
         setShow(true);
       })
       .catch((err) => {
@@ -51,7 +50,7 @@ const App = () => {
               Вход
             </Link>
           )}
-          <button className="btn btn-warning">Кабинет</button>
+          <Link to={"/cabinet"} className="btn btn-warning">Кабинет</Link>
         </div>
       </div>
 

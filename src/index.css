@@ -19,9 +19,17 @@
   cursor: pointer;
 }
 
+li{
+  cursor: pointer;
+}
+
 @media (max-width: 500px) {
   .rodal-dialog {
     width: 80% !important;
+  }
+
+  .user-box{
+    width: 100%;
   }
 
   .f-box_ {
