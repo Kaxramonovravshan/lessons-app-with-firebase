@@ -82,6 +82,8 @@ const Home = () => {
       });
       setCurrentItem("");
     }
+    setInpValue("");
+    setNewVideo([]);
     setSaveModal(!saveModal);
   }
 

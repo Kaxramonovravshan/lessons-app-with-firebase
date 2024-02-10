@@ -70,7 +70,7 @@ const Cabinet = () => {
         {/* ----------------------------- */}
         <div className="col-8  p-3">
           {videos.length === 0 ? (
-            <h1 className="text-center">  </h1>
+            <h1 className="text-center"> У этого пользователя нет Уроков ! </h1>
           ) : (
             <div className="p-4 d-flex f-box_ gap-3 flex-wrap w-100 container">
               {videos.map((itm, i) => {
