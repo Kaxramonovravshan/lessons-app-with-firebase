@@ -13,11 +13,17 @@ const Cabinet = () => {
   const [videos, setVideos] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentLesson, setCurrentLesson] = useState("");
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
+    let token = localStorage.getItem("token");
     getDocs(userCollection).then((res) => {
       const arr = res.docs.map((itm) => {
-        return { ...itm.data(), id: itm.id };
+        if (token === itm.data().uid) {
+          delete itm.data();
+        } else {
+          return { ...itm.data(), id: itm.id };
+        }
       });
       setUsers(arr);
     });
@@ -28,9 +34,8 @@ const Cabinet = () => {
     navigate("/login");
   }
 
-  function showUserLesson(id) {
-    console.log(id);
-    const q = query(postCollection, where("userID", "==", id));
+  function showUserLesson(uid) {
+    const q = query(postCollection, where("userID", "==", uid));
     getDocs(q).then((res) => {
       const vArr = res.docs.map((itm) => {
         console.log(itm.data());
@@ -45,53 +50,59 @@ const Cabinet = () => {
     setCurrentLesson(i);
   }
 
-
-    
   return (
     <div>
       <button onClick={logoutUser} className="btn btn-danger">
         Выход
       </button>
-      <div className="row f-box_ mt-3 justify-content-center">
-        {/* ------------------------------ */}
-        <div className="col-4 user-box  p-3 ">
-          <ul className="list-group overflow-auto">
-            {users.map((itm) => (
-              <li
-                onClick={() => showUserLesson(itm.token)}
-                key={itm.id}
-                className="list-group-item"
-              >
-                {itm.username}
-              </li>
-            ))}
-          </ul>
+      <div className="col-2 user-box  p-3 ">
+            <ul className="list-group overflow-auto">
+              {users.map((itm, i) => (
+                <li
+                  onClick={() => showUserLesson(itm?.uid)}
+                  key={i}
+                  className="list-group-item"
+                >
+                  {itm?.username}
+                </li>
+              ))}
+            </ul>
+          </div>
+      {show ? (
+        <div className="row f-box_ mt-3">
+          {/* ------------------------------ */}
+          
+          {/* ----------------------------- */}
+          <div className="col-8 my-col p-3">
+            {videos.length === 0 ? (
+              <h1 className="text-center">
+                {" "}
+                У этого пользователя нет Уроков !{" "}
+              </h1>
+            ) : (
+              <div className="d-flex f-box_ flex-wrap gap-3 w-100 container">
+                {videos.map((itm, i) => {
+                  return (
+                    <div className="border p-2 _box" key={i}>
+                      <h5 className="text-center">{itm.name}</h5>
+                      <h6 className="text-center h6 mb-3">
+                        В этом уроке{" "}
+                        <span className="text-danger">{itm.video.length}</span>{" "}
+                        видео
+                      </h6>
+                      <p onClick={() => openVideo(i)} className="text-primary">
+                        посмотреть видео
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
-        {/* ----------------------------- */}
-        <div className="col-8  p-3">
-          {videos.length === 0 ? (
-            <h1 className="text-center"> У этого пользователя нет Уроков ! </h1>
-          ) : (
-            <div className="p-4 d-flex f-box_ gap-3 flex-wrap w-100 container">
-              {videos.map((itm, i) => {
-                return (
-                  <div className="border p-2 _box" key={i}>
-                    <h5 className="text-center">{itm.name}</h5>
-                    <h6 className="text-center mb-3">
-                      В этом уроке{" "}
-                      <span className="text-danger">{itm.video.length}</span>{" "}
-                      видео
-                    </h6>
-                    <p onClick={() => openVideo(i)} className="text-primary">
-                      посмотреть видео
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
+      ) : (
+        ""
+      )}
 
       <Rodal visible={isOpen} onClose={() => setIsOpen(!isOpen)}>
         <div className="py-4">

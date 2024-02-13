@@ -63,13 +63,13 @@ const Home = () => {
   }
 
   function saveLesson() {
-    const token = localStorage.getItem("token");
+    const id = localStorage.getItem("token");
 
     if (currentItem === "") {
       const refCollection = collection(firestore, "lessons");
       addDoc(refCollection, {
         name: inpValue,
-        userID: token,
+        userID: id,
         video: newVideo
       }).then((res) => {
         getLessons();

@@ -21,20 +21,37 @@ const Register = () => {
   const [username, setUsername] = useState("");
 
   function register() {
+    const refCollection = collection(firestore, "users");
     createUserWithEmailAndPassword(auth, email, password)
       .then((res) => {
-        const refCollection = collection(firestore, "users");
         addDoc(refCollection, {
           email,
           password,
           username,
-          token: res.user.uid
-        }).then((res) => {
-          navigate("/login");
-        });
+          uid: res.user.uid
+        })
+          .then((res) => {
+            navigate("/login");
+          })
+          .catch((addDocError) => {
+            console.error(
+              "Ошибка при добавлении пользователя в коллекцию:",
+              addDocError
+            );
+            alert("Ошибка при добавлении пользователя в коллекцию!");
+          });
       })
-      .catch((error) => {
-        alert("Ошибка !");
+      .catch((authError) => {
+        console.error("Ошибка при регистрации пользователя:", authError);
+
+        if (authError.code === "auth/email-already-in-use") {
+          alert(
+            "Этот адрес электронной почты уже используется. Возможно, вы уже зарегистрированы?"
+          );
+          // Можно также предоставить опцию сброса пароля, если пользователь забыл его
+        } else {
+          alert("Произошла ошибка при регистрации пользователя!");
+        }
       });
   }
 
@@ -59,7 +76,7 @@ const Register = () => {
 
   function signInFacebook() {
     const auth = getAuth();
-    signInWithPopup(auth, provider).then((result) => {
+    signInWithPopup(auth, facebookProvider).then((result) => {
       const user = result.user;
 
       const credential = FacebookAuthProvider.credentialFromResult(result);
@@ -101,7 +118,12 @@ const Register = () => {
             alt=""
           />
           <img className="icon-width" src={githubIcon} alt="" />
-          <img onClick={signInFacebook} className="icon-width" src={facebookIcon} alt="" />
+          <img
+            onClick={signInFacebook}
+            className="icon-width"
+            src={facebookIcon}
+            alt=""
+          />
         </div>
       </div>
     </div>

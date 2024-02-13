@@ -32,9 +32,33 @@ li{
     width: 100%;
   }
 
-  .f-box_ {
-    flex-direction: column;
+  ._box{
+    width: 130px;
+    min-height: 130px;
+    justify-content: flex-start;
+  }
+
+  ._box button{
+    height: 30px;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  ._box h6,p{
+    font-size: 13px;
+    margin: 0 !important;
+
+  }
+
+  .my-col{
+    width: 100%;
+  }
+
+  .f-box_ {
+    justify-content: center;
   }
 
   .my-btn_ {

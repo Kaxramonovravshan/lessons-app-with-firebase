@@ -24,18 +24,14 @@ const App = () => {
     const token = localStorage.getItem("token");
     const refCollection = collection(firestore, "users");
 
-    const q = query(refCollection, where("token", "==", token));
-
-    getDocs(q)
-      .then((res) => {
-        setShow(true);
-      })
-      .catch((err) => {
-        setShow(false);
-        if (!openPage.includes(location.pathname)) {
-          navigate("/login");
-        }
-      });
+    if (token === null) {
+      setShow(false)
+      if (!openPage.includes(location.pathname)) {
+        navigate("/login");
+      }
+    }else{
+      setShow(true)
+    }
   }, [location.pathname]);
 
   return (
@@ -50,7 +46,9 @@ const App = () => {
               Вход
             </Link>
           )}
-          <Link to={"/cabinet"} className="btn btn-warning">Кабинет</Link>
+          <Link to={"/cabinet"} className="btn btn-warning">
+            Кабинет
+          </Link>
         </div>
       </div>
 
