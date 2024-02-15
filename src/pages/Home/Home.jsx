@@ -70,7 +70,9 @@ const Home = () => {
       addDoc(refCollection, {
         name: inpValue,
         userID: id,
-        video: newVideo
+        video: newVideo,
+        dislikeCount:0,
+        likeCount:0
       }).then((res) => {
         getLessons();
       });

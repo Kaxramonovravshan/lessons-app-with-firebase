@@ -25,19 +25,21 @@ const App = () => {
     const refCollection = collection(firestore, "users");
 
     if (token === null) {
-      setShow(false)
+      setShow(false);
       if (!openPage.includes(location.pathname)) {
         navigate("/login");
       }
-    }else{
-      setShow(true)
+    } else {
+      setShow(true);
     }
   }, [location.pathname]);
 
   return (
     <div>
       <div className="p-3 bg-dark mb-3 text-white d-flex align-items-center justify-content-between">
-        <h1>LOGO</h1>
+        <Link className="text-white " to={"/"}>
+          <h1>LOGO</h1>
+        </Link>
         <div className="d-flex align-items-center gap-3">
           {show ? (
             ""

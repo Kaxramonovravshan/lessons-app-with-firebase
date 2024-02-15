@@ -19,8 +19,56 @@
   cursor: pointer;
 }
 
-li{
+li {
   cursor: pointer;
+}
+
+.like,
+.dislike {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+}
+
+.like {
+  background-color: green;
+  color: #fff;
+  position: relative;
+}
+
+.dislike {
+  background-color: red;
+  color: #fff;
+  position: relative;
+}
+
+
+.countLike{
+  position: absolute;
+  left: 95%;
+  top: -10%;
+  color: #fff;
+  transform: translate(-95%,0);
+}
+
+.countDislike{
+  position: absolute;
+  left: 95%;
+  top: -10%;
+  color: #fff;
+  transform: translate(-95%,0);
+}
+
+.like-box {
+  width: 100%;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: left;
 }
 
 @media (max-width: 500px) {
@@ -28,17 +76,17 @@ li{
     width: 80% !important;
   }
 
-  .user-box{
+  .user-box {
     width: 100%;
   }
 
-  ._box{
+  ._box {
     width: 130px;
     min-height: 130px;
     justify-content: flex-start;
   }
 
-  ._box button{
+  ._box button {
     height: 30px;
     display: flex;
     align-items: center;
@@ -47,13 +95,13 @@ li{
     font-size: 14px;
   }
 
-  ._box h6,p{
+  ._box h6,
+  p {
     font-size: 13px;
     margin: 0 !important;
-
   }
 
-  .my-col{
+  .my-col {
     width: 100%;
   }
 
@@ -64,7 +112,7 @@ li{
   .my-btn_ {
     width: 100% !important;
   }
-  .login{
+  .login {
     width: 95% !important;
   }
 }
